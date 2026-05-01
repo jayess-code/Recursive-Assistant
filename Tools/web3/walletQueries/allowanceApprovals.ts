@@ -1,4 +1,4 @@
-import type { ToolParameters } from "../ToolExecutor/toolConfig.js";
+import type { ToolParameters } from "../../../ToolExecutor/toolConfig.js";
 
 export const parameters: ToolParameters = {
     type: "object",

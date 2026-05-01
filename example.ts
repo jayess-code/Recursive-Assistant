@@ -15,10 +15,11 @@ async function main() {
   const agent = new Agent({
     name: "MinimalReasoningAgent",
     description: "Small example entrypoint for the reasoning loop",
-    capabilities: ["reasoning"],
+    // capabilities: ["reasoning"],
     tools: [],
-    systemPrompt:
-      "You are a concise assistant. Think step by step internally and answer clearly.",
+    instructions: {
+      basePrompt: "You are a concise assistant. Think step by step internally and answer clearly.",
+    },
   }, {
     provider: {
       name: providerName,

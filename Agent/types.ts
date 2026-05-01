@@ -8,3 +8,15 @@ export interface AgentRunResult {
     messages: InternalMessage[];
 }
 
+export type AssistantInstructionShape = {
+	basePrompt: string;
+    systemPrompt?: string;
+    personaHeader?: string;
+    keyPrinciples?: string[];
+    personalityTraits?: string[];
+    workflow?: string;
+    safety?: string;
+    meta?: string;
+    voice?: string;
+    tools?: string[];
+};

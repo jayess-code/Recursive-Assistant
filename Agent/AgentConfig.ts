@@ -3,17 +3,21 @@ import { ReasoningEngine } from "../ReasoningExecutor/ReasoningExecutor.js";
 import { ToolExecutor } from "../ToolExecutor/index.js";
 import type { ToolConfig, ToolFunction } from "../ToolExecutor/toolConfig.js";
 import { ToolRegistry } from "../ToolExecutor/toolRegistry.js";
+import { buildAssistantSystemPrompt } from "./buildPrompt/index.js";
+import {
+    buildRuntimeContextMessage,
+    type PromptRuntimeContext,
+} from "./buildPrompt/buildRuntimePrompt.js";
 import type { InternalMessage } from "./messages.js";
-import type { AgentRunResult } from "./types.js";
+import type { AgentRunResult, AssistantInstructionShape } from "./types.js";
 
 
 export interface AgentDefinition {
   id?: string;
   name: string;
   description: string;
-  capabilities: string[];
   tools: string[];
-  systemPrompt: string;
+  instructions: AssistantInstructionShape;
 }
 
 export interface AgentRuntime {
@@ -24,6 +28,7 @@ export interface AgentRuntime {
   maxIterations?: number;
   apiKey?: string;
     toolRegistry?: Record<string, ToolConfig>;
+    promptRuntimeContext?: PromptRuntimeContext;
 }
 
 export class Agent {
@@ -57,7 +62,7 @@ export class Agent {
 
         return resolvedTools;
     }
-    
+
     async run(
         initialMessages: InternalMessage[],
         runtimeOverrides?: Partial<AgentRuntime>,
@@ -75,7 +80,21 @@ export class Agent {
         const resolvedTools = this.resolveTools(runtime);
         const providerTools: ToolFunction[] = Object.values(resolvedTools).map((toolConfig) => toolConfig.tool);
         const toolExecutor = new ToolExecutor(this, resolvedTools);
-        const messages: InternalMessage[] = [...initialMessages];
+        const runtimeSystemMessage: InternalMessage | null = runtime.promptRuntimeContext
+            ? {
+                role: "system",
+                content: buildRuntimeContextMessage(runtime.promptRuntimeContext),
+            }
+            : null;
+        const messages: InternalMessage[] = runtimeSystemMessage
+            ? [runtimeSystemMessage, ...initialMessages]
+            : [...initialMessages];
+        const assistantBasePrompt = buildAssistantSystemPrompt({
+            name: this.definition.name,
+            description: this.definition.description,
+            instructions: this.definition.instructions,
+            tools: this.definition.tools,
+        }, resolvedTools);
 
         const engine = new ReasoningEngine({
             provider,
@@ -83,11 +102,13 @@ export class Agent {
             maxIterations: runtime.maxIterations ?? 6,
         });
 
+        
+
         const reasoningResult = await engine.run({
             assistant: {
                 id: this.definition.id ?? this.definition.name,
                 model: runtime.provider.model,
-                instructions: { basePrompt: this.definition.systemPrompt },
+                instructions: { basePrompt: assistantBasePrompt },
                 tools: providerTools,
                 newToolNamesArray: this.definition.tools,
                 provider: runtime.provider.name,

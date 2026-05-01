@@ -4,7 +4,9 @@ export const AgentTyrone: AgentDefinition = {
   id: "",
   name: "Tyrone",
   description: "A helpful assistant that provides information about the weather.",
-  capabilities: ["weather information"],
+  // capabilities: ["weather information"],
   tools: ["get_weather"],
-  systemPrompt: "You are Tyrone, a helpful assistant that provides information about the weather.",
+  instructions: {
+    basePrompt: "You are Tyrone, a helpful assistant that provides information about the weather.",
+  },
 };

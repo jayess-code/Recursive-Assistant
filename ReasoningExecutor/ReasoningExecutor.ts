@@ -8,17 +8,22 @@ export interface ReasoningContext {
   provider: { send: (context: LLMContext) => Promise<LLMResponse> };
   toolExecutor?: ToolExecutor;
   maxIterations?: number;
+  outputOptions?: {
+    includeReasoningSteps?: boolean;
+    includeExecutedToolCalls?: boolean;
+  };
 }
 
 export class ReasoningEngine {
   private readonly provider: ReasoningContext["provider"];
   private readonly toolExecutor: ToolExecutor | undefined;
   private readonly maxIterations: number;
-
+  private readonly outputOptions: ReasoningContext["outputOptions"];
   constructor(context: ReasoningContext) {
     this.provider = context.provider;
     this.toolExecutor = context.toolExecutor;
     this.maxIterations = context.maxIterations ?? 6;
+    this.outputOptions = context.outputOptions;
   }
 
   async run(context: LLMContext): Promise<{
@@ -59,7 +64,9 @@ export class ReasoningEngine {
           .filter((c: LLMResponse["content"][number]) => c.kind === "text")
           .map((c: LLMResponse["content"][number]) => c.value)
           .join("\n");
-        reasoningSteps.push(`iteration_${iteration}`);
+        if (this.outputOptions?.includeReasoningSteps) {
+          reasoningSteps.push(`iteration_${iteration}`);
+        }
 
         messages.push({
           role: "assistant",

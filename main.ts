@@ -36,6 +36,7 @@ async function main() {
             model: process.env.AI_MODEL ?? "gpt-4o-mini",
         },
         toolRegistry: localTools,
+        promptRuntimeContext: {executionType:"conversation"},
     });
     let messages: InternalMessage[] = [];
 

@@ -1,4 +1,4 @@
-import type { ToolParameters } from "../ToolExecutor/toolConfig.js";
+import type { ToolParameters } from "../../ToolExecutor/toolConfig.js";
 
 const AddressSchema = {
     type: "string",
