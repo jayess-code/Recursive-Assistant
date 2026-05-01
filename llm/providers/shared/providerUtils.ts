@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import type { ContentPart, InternalMessage } from "../../../Agent/messages.js";
 
 export const createOpenAIClient = (apiKey?: string, baseURL?: string) => {
-  return new OpenAI({ apiKey: apiKey || process.env.OPENAI_API_KEY, baseURL });
+  return new OpenAI({ apiKey: apiKey ?? process.env.OPENAI_API_KEY, baseURL });
 };
 
 export const createOllamaClient = (baseURL?: string, timeout?: number) => {

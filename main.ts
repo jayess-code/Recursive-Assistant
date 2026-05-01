@@ -37,6 +37,7 @@ async function main() {
         },
         toolRegistry: localTools,
         promptRuntimeContext: {executionType:"conversation"},
+        reasoningEngineOptions: { outputOptions: { includeReasoningSteps: true, includeExecutedToolCalls: true } },
     });
     let messages: InternalMessage[] = [];
 
