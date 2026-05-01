@@ -1,5 +1,5 @@
 import { getProvider } from "../llm/providers/index.js";
-import { ReasoningEngine } from "../ReasoningExecutor/ReasoningExecutor.js";
+import { ReasoningEngine, type ReasoningContext } from "../ReasoningExecutor/ReasoningExecutor.js";
 import { ToolExecutor } from "../ToolExecutor/index.js";
 import type { ToolConfig, ToolFunction } from "../ToolExecutor/toolConfig.js";
 import { ToolRegistry } from "../ToolExecutor/toolRegistry.js";
@@ -27,8 +27,11 @@ export interface AgentRuntime {
   };
   maxIterations?: number;
   apiKey?: string;
-    toolRegistry?: Record<string, ToolConfig>;
-    promptRuntimeContext?: PromptRuntimeContext;
+  toolRegistry?: Record<string, ToolConfig>;
+  promptRuntimeContext?: PromptRuntimeContext;
+  reasoningEngineOptions?: Partial<ReasoningContext>;
+  stream?: boolean;
+    onToken?: (token: string) => void;
 }
 
 export class Agent {
@@ -97,9 +100,10 @@ export class Agent {
         }, resolvedTools);
 
         const engine = new ReasoningEngine({
+            ...runtime.reasoningEngineOptions,
             provider,
             toolExecutor,
-            maxIterations: runtime.maxIterations ?? 6,
+            maxIterations: runtime.maxIterations ?? runtime.reasoningEngineOptions?.maxIterations ?? 6,
         });
 
         
@@ -114,7 +118,8 @@ export class Agent {
                 provider: runtime.provider.name,
             },
             messages,
-            ...(runtime.apiKey ? { apiKey: runtime.apiKey } : {}),
+            ...(typeof runtime.stream === "boolean" ? { stream: runtime.stream } : {}),
+            ...(runtime.onToken ? { onToken: runtime.onToken } : {}),
         });
 
         return {

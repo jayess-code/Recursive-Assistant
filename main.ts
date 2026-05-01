@@ -30,6 +30,7 @@ const question = (query: string): Promise<string> => {
 };
 
 async function main() {
+    let streamedResponse = false;
     const agent = new Agent(AgentTyrone, {
         provider: {
             name: process.env.AI_PROVIDER ?? "openai",
@@ -38,6 +39,11 @@ async function main() {
         toolRegistry: localTools,
         promptRuntimeContext: {executionType:"conversation"},
         reasoningEngineOptions: { outputOptions: { includeReasoningSteps: true, includeExecutedToolCalls: true } },
+        stream: true,
+        onToken: (token) => {
+            streamedResponse = true;
+            process.stdout.write(token);
+        },
     });
     let messages: InternalMessage[] = [];
 
@@ -59,8 +65,14 @@ async function main() {
             content: userInput,
         });
 
+        streamedResponse = false;
         const result = await agent.run(messages);
         messages = result.messages;
+
+        if (streamedResponse) {
+            process.stdout.write("\n");
+            continue;
+        }
 
         console.log("Final message:\n", result.finalMessage);
     }

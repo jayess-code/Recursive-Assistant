@@ -1,5 +1,6 @@
 import type { IToolCall } from "../../../ToolExecutor/types.js";
 import { extractTextAndToolCalls } from "./openaiOutputAdapter.js";
+import { safeParseToolArgs } from "../shared/adapterUtils.js";
 
 
 export async function executeOpenAIStreamingRequest({
@@ -39,7 +40,7 @@ export async function executeOpenAIStreamingRequest({
     if (event?.type === "response.output_item.done" && event?.item?.type === "function_call") {
       toolCalls.push({
         name: event.item.name,
-        args: event.item.arguments,
+        args: safeParseToolArgs(event.item.arguments),
         callId: event.item.call_id,
       });
     }

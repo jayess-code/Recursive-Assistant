@@ -19,14 +19,14 @@ export async function getWeather(
    console.log(`Requesting weather data`);
 
     const response = await fetch(apiUrl);
-
+console.log(`Received response from weather API:`, response);
     if (!response.ok) {
         const errorText = await response.text();
         return `Error fetching weather: ${response.statusText} - ${errorText}`
     }
 
     const data = await response.json();
-
+// console.log(`Received weather data:`, data);
     if (!data.weather || !data.main) {
         return `Unexpected API response format for ${location}.`;
     }
