@@ -29,6 +29,8 @@ export const getAvailableChainsBooleanTool: ToolConfig<GetAvailableChainsBoolean
   },
   info: {
     category: "infra",
+    subcategory: "chains",
+    tags: ["infra", "chains", "available"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

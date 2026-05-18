@@ -29,6 +29,8 @@ export const getTransactionReceiptTool: ToolConfig<GetTransactionReceiptArgs> = 
     },
     info: {
         category: "utility",
+        subcategory: "transactions",
+        tags: ["utility", "transactions", "history"],
         riskLevel: "low",
         readOnly: true,
         access: "read",

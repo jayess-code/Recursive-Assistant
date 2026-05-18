@@ -104,7 +104,9 @@ export const getPortfolioBalancesTool: ToolConfig<GetPortfolioBalancesArgs> = {
         handler: async (args) => getEnrichedPortfolioBalances(args),
     },
     info: {
-        category: "wallet",
+        category: "crypto",
+        subcategory: "wallet",
+        tags: ["wallet", "portfolio", "balances"],
         riskLevel: "low",
         readOnly: true,
         access: "read",

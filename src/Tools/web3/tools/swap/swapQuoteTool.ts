@@ -110,7 +110,9 @@ export const swapQuoteTool: ToolConfig<SwapQuoteToolArgs> = {
     handler: async (args) => swapQuote(args),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["swap", "quote"],
     riskLevel: "medium",
     readOnly: true,
     access: "read",

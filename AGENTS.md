@@ -27,6 +27,13 @@ For tool creation or modification, invoke `createtool` for conventions, schema r
 - If AGENTS references local-only files, ensure those references are optional and not required for project operation.
 - Use `*.private.md` or `*.local.md` suffixes for personal notes so they stay out of commits.
 
+## Commit Hygiene (Public)
+- Keep commits focused by subject area (for example: server, tools, runtime).
+- Commit before switching to a different subject area.
+- Prefer one logical change per commit and clear commit subjects.
+- Run `npm run build` and strict TypeScript checks before committing.
+- Optional local checklist can live in private notes and is not required for collaborators.
+
 ## Web3-Specific Rules
 - Use viem clients via `Tools/web3/clients/viem/createViemPublicClient.ts` and `createViemWalletClient.ts`.
 - Import chain constants only from `Tools/web3/clients/viem/viemChains.ts`.

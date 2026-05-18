@@ -113,7 +113,9 @@ export const getWalletBalancesTool: ToolConfig<GetWalletBalancesArgs> = {
         handler: async (args) => getWalletBalances(args),
     },
     info: {
-        category: "wallet",
+        category: "crypto",
+        subcategory: "wallet",
+        tags: ["wallet", "balances"],
         riskLevel: "low",
         readOnly: true,
         access: "read",

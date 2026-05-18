@@ -138,7 +138,9 @@ export const swapBuildTool: ToolConfig<SwapBuildToolArgs> = {
     handler: async (args) => swapBuild(args),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["swap", "build"],
     riskLevel: "high",
     readOnly: false,
     access: "write",

@@ -86,6 +86,8 @@ export const getAvailableChainsTool: ToolConfig<GetAvailableChainsArgs> = {
   },
   info: {
     category: "infra",
+    subcategory: "chains",
+    tags: ["infra", "chains", "metadata"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

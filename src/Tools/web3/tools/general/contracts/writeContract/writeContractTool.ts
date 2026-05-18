@@ -84,7 +84,9 @@ export const writeContractTool: ToolConfig<WriteContractArgs> = {
     handler: async (args) => writeContract(args),
   },
   info: {
-    category: "smartcontract",
+    category: "crypto",
+    subcategory: "contracts",
+    tags: ["smartcontract", "contracts", "write"],
     riskLevel: "high",
     readOnly: false,
     access: "write",

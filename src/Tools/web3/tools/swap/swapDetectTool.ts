@@ -104,7 +104,9 @@ export const swapDetectTool: ToolConfig<SwapDetectToolArgs> = {
     handler: async (args) => swapDetect(args),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["swap", "detect"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

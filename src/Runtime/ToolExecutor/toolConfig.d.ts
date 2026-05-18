@@ -83,20 +83,31 @@ export interface ComputerUseToolType extends BaseTool {
 
 export type ToolSourceType = "local" | "mcp" | "webhook" | "queue";
 
+// Top-level tool categories (broad)
+// Top-level tool categories (broad)
 export type ToolCategory =
-|"mcp"
-|"search"
+  | "mcp"
+  | "search"
   | "general"
   | "system"
   | "utility"
   | "jobs"
   | "storage"
-  | "crypto"
+  | "crypto" // all crypto/web3 tools
   | "infra"
-  | "defi"
-  | "wallet"
-  | "market-data"
-  | "smartcontract";
+  | "other";
+
+/**
+ * Subcategories are free-form strings for finer classification (e.g., "defi", "wallet", "market-data", "bridge", "swap", "nft", "price").
+ * Add as needed per tool. Use tags for multi-dimensional classification if desired.
+ */
+export type ToolSubcategory = string;
+
+/**
+ * Subcategories are free-form strings for finer classification (e.g., "bridge", "swap", "nft", "price").
+ * Add as needed per tool. Use tags for multi-dimensional classification if desired.
+ */
+export type ToolSubcategory = string;
 
 
 export interface MCPToolConfig {
@@ -110,6 +121,14 @@ export interface MCPToolConfig {
 interface BaseToolInfo {
   version?: string;
   category?: ToolCategory;
+  /**
+   * Optional subcategory for finer classification (e.g., "bridge", "swap", "nft").
+   */
+  subcategory?: ToolSubcategory;
+  /**
+   * Optional tags for multi-dimensional classification.
+   */
+  tags?: string[];
   riskLevel?: "low" | "medium" | "high";
   readOnly?: boolean;
   requiresConfirmation?: boolean;

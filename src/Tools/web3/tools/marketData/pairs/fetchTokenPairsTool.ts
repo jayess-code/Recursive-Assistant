@@ -79,7 +79,9 @@ export const fetchTokenPairsTool: ToolConfig<FetchTokenPairsArgs> = {
 		handler: async (args, context) => fetchTokenPairs(args, context),
 	},
 	info: {
-		category: "market-data",
+		category: "crypto",
+		subcategory: "market-data",
+		tags: ["market-data", "pairs", "dex"],
 		riskLevel: "low",
 		readOnly: true,
 		access: "read",

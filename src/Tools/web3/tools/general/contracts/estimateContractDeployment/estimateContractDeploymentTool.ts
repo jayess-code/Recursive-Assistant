@@ -36,6 +36,8 @@ export const estimateContractDeploymentTool: ToolConfig<EstimateContractDeployme
 
   info: {
     category: "crypto",
+    subcategory: "contracts",
+    tags: ["crypto", "contracts", "estimate", "deployment"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

@@ -47,7 +47,9 @@ export const bridgeStatusTool: ToolConfig<BridgeStatusToolArgs> = {
     handler: async (args) => bridgeStatus(args),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["bridge", "status"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

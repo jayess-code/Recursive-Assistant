@@ -32,7 +32,9 @@ export const bridgeDiscoveryTool: ToolConfig = {
       bridgeDiscovery(args as BridgeDiscoveryArgs),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["bridge", "discovery"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

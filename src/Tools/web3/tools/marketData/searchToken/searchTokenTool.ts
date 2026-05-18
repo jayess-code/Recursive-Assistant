@@ -139,7 +139,9 @@ export const searchTokenTool: ToolConfig<SearchTokenArgs> = {
 		handler: async (args, context) => searchToken(args, context),
 	},
 	info: {
-		category: "market-data",
+		category: "crypto",
+		subcategory: "market-data",
+		tags: ["market-data", "token", "search"],
 		riskLevel: "low",
 		readOnly: true,
 		access: "read",

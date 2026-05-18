@@ -49,7 +49,9 @@ export const getFearAndGreedTool: ToolConfig<GetFearAndGreedArgs> = {
   info: {
     definition:
       "Returns CoinMarketCap Crypto Fear and Greed sentiment data. Use mode='latest' for current sentiment and mode='historical' for trend analysis. This is sentiment context only and should not be treated as direct execution confirmation for swaps/trades.",
-    category: "market-data",
+    category: "crypto",
+    subcategory: "market-data",
+    tags: ["market-data", "sentiment", "fear", "greed"],
     riskLevel: "low",
     readOnly: true,
     provider: "coinmarketcap",

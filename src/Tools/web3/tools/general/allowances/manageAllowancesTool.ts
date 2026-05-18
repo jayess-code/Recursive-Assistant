@@ -110,7 +110,9 @@ export const manageAllowancesTool: ToolConfig<ManageAllowancesArgs> = {
     },
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["defi", "allowances", "manage"],
     riskLevel: "high",
     readOnly: false,
     access: "write",

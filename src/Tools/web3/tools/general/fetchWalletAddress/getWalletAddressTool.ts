@@ -37,6 +37,8 @@ export const getWalletAddressTool: ToolConfig<GetWalletAddressArgs> = {
   },
   info: {
     category: "crypto",
+    subcategory: "wallet",
+    tags: ["crypto", "wallet", "address"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

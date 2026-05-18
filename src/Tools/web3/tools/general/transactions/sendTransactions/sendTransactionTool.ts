@@ -53,7 +53,9 @@ export const sendTransactionTool: ToolConfig<SendTransactionArgs> = {
     },
 
   info: {
-    category: "wallet",
+    category: "crypto",
+    subcategory: "wallet",
+    tags: ["wallet", "transactions", "send"],
     riskLevel: "high",
     readOnly: false,
     access: "write",

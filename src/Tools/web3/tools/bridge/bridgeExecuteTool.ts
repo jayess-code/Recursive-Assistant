@@ -114,7 +114,9 @@ export const bridgeExecuteTool: ToolConfig<BridgeExecuteToolArgs> = {
     handler: async (args) => bridgeExecute(args),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["bridge", "execute"],
     riskLevel: "high",
     readOnly: false,
     access: "write",

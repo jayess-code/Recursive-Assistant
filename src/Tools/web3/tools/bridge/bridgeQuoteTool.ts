@@ -107,7 +107,9 @@ export const bridgeQuoteTool: ToolConfig<BridgeQuoteToolArgs> = {
     handler: async (args) => bridgeQuote(args),
   },
   info: {
-    category: "defi",
+    category: "crypto",
+    subcategory: "defi",
+    tags: ["bridge", "quote"],
     riskLevel: "medium",
     readOnly: true,
     access: "read",

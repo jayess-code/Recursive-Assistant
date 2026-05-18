@@ -170,6 +170,8 @@ export const readContractTool: ToolConfig<ReadContractHandlerArgs> = {
   },
   info: {
     category: "utility",
+    subcategory: "contracts",
+    tags: ["utility", "contracts", "read"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

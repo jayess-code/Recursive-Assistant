@@ -127,6 +127,8 @@ handler: async (args) => {
 
   info: {
     category: "crypto",
+    subcategory: "gas",
+    tags: ["crypto", "gas", "price"],
     riskLevel: "low",
     readOnly: true,
     access: "read",

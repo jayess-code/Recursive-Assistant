@@ -96,7 +96,9 @@ export const getDexInfoTool: ToolConfig<GetDexInfoArgs> = {
     handler: async (args, context) => getDexInfo(args, context),
   },
   info: {
-    category: "market-data",
+    category: "crypto",
+    subcategory: "market-data",
+    tags: ["market-data", "dex", "info"],
     riskLevel: "low",
     readOnly: true,
     access: "read",
