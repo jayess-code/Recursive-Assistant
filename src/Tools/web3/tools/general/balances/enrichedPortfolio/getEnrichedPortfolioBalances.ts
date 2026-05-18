@@ -44,19 +44,12 @@ export async function getEnrichedPortfolioBalances(args: GetPortfolioBalancesArg
                 const resolvedQueries = await Promise.all(
                     walletQueries.map(async ({ chain, tokens = [] }) => {
                         if (tokens.length > 0) return { chain, tokens };
-                        // try {
                             const response = await fetchAllTokenBalancesAlchemy({ walletAddress, chain });
                             const discovered = (response.result?.tokenBalances ?? [])
                                 .filter((t) => !t.error && t.tokenBalance !== "0x0000000000000000000000000000000000000000000000000000000000000000")
                                 .map((t) => t.contractAddress as Address);
                             return { chain, tokens: discovered };
-                    //     } catch (error) {
-                    //         console.warn(
-                    //             `[getEnrichedPortfolioBalances] token discovery failed for ${walletAddress} on ${chain}. Returning empty token set.`,
-                    //             error instanceof Error ? error.message : error
-                    //         );
-                    //         return { chain, tokens: [] };
-                    //     }
+                    
                     })
                 );
 

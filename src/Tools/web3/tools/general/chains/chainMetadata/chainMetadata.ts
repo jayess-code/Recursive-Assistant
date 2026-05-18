@@ -208,7 +208,7 @@ function fuzzyScore(filter: string, key: string, name: string, symbol: string): 
   if (name.includes(filter)) return 55;
   if (symbol.includes(filter)) return 50;
 
-  // Loose fuzzy: all query chars appear in order in key or name (e.g. "arb" -> "arbitrum").
+  /**  Loose fuzzy: all query chars appear in order in key or name (e.g. "arb" -> "arbitrum"). */
   if (isSubsequence(filter, key)) return 30;
   if (isSubsequence(filter, name)) return 25;
 
