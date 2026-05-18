@@ -1,0 +1,122 @@
+import type { ToolConfig, ToolParameters } from "../../../../Runtime/ToolExecutor/toolConfig";
+import { SwapQuoteToolArgs, swapQuote } from "./swap";
+
+const parameters: ToolParameters = {
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "chain",
+    "routerAddress",
+    "tokenIn",
+    "tokenOut",
+    "amount",
+    "tradeType",
+    "sender",
+    "recipient",
+    "path",
+    "feeTiers",
+    "feeTier",
+    "slippageBps",
+    "allowLowConfidence",
+    "abi",
+    "quoterAddress",
+  ],
+  properties: {
+    chain: { type: "string", description: "Target chain key." },
+    routerAddress: {
+      type: "string",
+      pattern: "^0x[a-fA-F0-9]{40}$",
+      description: "DEX router contract address used for execution. Must be a router, not a pair/pool contract and not a token contract.",
+      nullable:true,
+      default: null,
+    },
+    tokenIn: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$", description: "Input token contract address. Resolve the exact token first and do not substitute lookalike stables such as USDT for USDC." },
+    tokenOut: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$", description: "Output token contract address. Resolve the exact token first and do not pass router or pair/pool addresses here." },
+    amount: { type: "string", description: "Raw integer token amount in the token's base units for exact_in or exact_out based on tradeType. Do not assume 18 decimals. Convert using the actual token decimals for tokenIn/tokenOut. Example: 0.1 USDC (6 decimals) = 100000, while 0.1 WPOL (18 decimals) = 100000000000000000. This is not always wei." },
+    tradeType: {
+      type: "string",
+      nullable: true,
+      default: "exact_in",
+      enum: ["exact_in", "exact_out"],
+      description: "Quote direction.",
+    },
+    sender: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$", description: "Swap sender/taker address." },
+    recipient: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$", description: "Recipient for swap output." },
+    path: {
+      type: "array",
+      nullable: true,
+      default: null,
+      description: "Optional explicit token route containing token addresses only (for example [tokenIn, bridgeToken, tokenOut]). Pass null when no explicit route is needed.",
+      items: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" },
+    },
+    feeTiers: {
+      type: "array",
+      nullable: true,
+      default: null,
+      description: "Optional per-hop fee tiers for concentrated-liquidity multi-hop routes. Length must equal path.length - 1 for Uniswap V3.",
+      items: {
+        type: "number",
+        minimum: 1,
+        maximum: 1_000_000,
+      },
+    },
+    feeTier: {
+      type: "number",
+      nullable: true,
+      default: null,
+      minimum: 1,
+      maximum: 1_000_000,
+      description: "Optional concentrated-liquidity fee tier.",
+    },
+    slippageBps: {
+      type: "number",
+      nullable: true,
+      default: null,
+      minimum: 0,
+      maximum: 10_000,
+      description: "Slippage tolerance in basis points.",
+    },
+    allowLowConfidence: {
+      type: "boolean",
+      nullable: true,
+      default: false,
+      description: "Allow low-confidence detections to proceed.",
+    },
+    abi: {
+      type: "array",
+      nullable: true,
+      default: null,
+      description: "Optional ABI fragments for deterministic method/selector detection.",
+      items: { type: "object", additionalProperties: false, properties: {} },
+    },
+    quoterAddress: {
+      type: "string",
+      nullable: true,
+      default: null,
+      pattern: "^0x[a-fA-F0-9]{40}$",
+      description: "Optional quoter contract override for V3/Algebra. This is typically different from routerAddress.",
+    },
+  },
+};
+
+export const swapQuoteTool: ToolConfig<SwapQuoteToolArgs> = {
+  tool: {
+    type: "function",
+    name: "swap_quote",
+    description:
+      "Fetch a deterministic onchain swap quote once routerAddress is known. Amount must already be converted into raw token base units using the actual token decimals, not a default 18-decimal wei assumption. If routerAddress is unknown, call fetch_token_pairs first and map dexId to a supported router. Never pass pair/pool addresses as routerAddress.",
+    parameters,
+    strict: true,
+    handler: async (args) => swapQuote(args),
+  },
+  info: {
+    category: "defi",
+    riskLevel: "medium",
+    readOnly: true,
+    access: "read",
+    mode: "simulate",
+    provider: "onchain",
+    version: "1.0.0",
+    definition: "Quotes swaps via supported deterministic router families. Requires exact token contract addresses for tokenIn/tokenOut and a valid DEX router address; pair/pool addresses are not executable routers. The amount must be a raw integer in token base units using the token's actual decimals rather than a generic wei conversion. Use when you need pricing/output simulation. For executable swap plans, call swap_build after quoting.",
+  },
+};

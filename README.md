@@ -4,15 +4,15 @@ A TypeScript agent framework with a reasoning loop, multi-provider LLM support, 
 
 ## What This Project Does
 
-- Runs a reasoning loop that can call tools over multiple iterations.
-- Supports multiple model providers: OpenAI, DeepSeek, Anthropic, Local, and Ollama.
-- Provides an interactive CLI chat in main.ts with dynamic in-memory conversation history.
-- Includes a minimal one-shot example runner in example.ts.
+
+## Tool Response Pattern
+
+All tools in this repository follow a **unified JSON response contract**: they return structured responses instead of throwing exceptions. This enables the LLM assistant to see errors directly and reason about recovery strategies without interrupting execution.
+
+Every tool returns `JSON.stringify({ success: boolean, data?: T, error?: string })`. See `Tools/web3/TOOL_RESPONSE_CONTRACT.md` for the full specification, examples, and migration guide for existing tools.
 
 ## Requirements
 
-- Node.js 18+
-- npm
 
 ## Install
 
@@ -108,6 +108,27 @@ const agent = new Agent(agentDefinition, {
 });
 ```
 
+## Bridge Tools
+
+The Web3 bridge stack currently exposes four bridge-oriented tools:
+
+- `bridge_discovery`: Queries LayerZero Value Transfer API to list destination tokens/chains for a given source chain and token address.
+- `bridge_quote`: Simulates a bridge route and returns route status plus summary fields.
+- `bridge_execute`: Executes a bridge transaction (or preview with dry-run mode).
+- `bridge_status`: Tracks bridge transaction state by source chain and transaction hash.
+
+Recommended assistant flow:
+
+1. Call `bridge_discovery` first to validate whether a token is transferable and discover valid destination token variants.
+2. Use one discovered destination token route with `bridge_quote`.
+3. If quote is acceptable, call `bridge_execute`.
+4. Poll `bridge_status` until terminal state.
+
+Important notes:
+
+- LayerZero may return `422 Unsupported token` for some chain/token pairs. This is expected when the pair is not transferable.
+- A route can exist at discovery time and still fail execution-time validation due to provider-level constraints.
+
 ## Providers Available
 
 Provider registry is defined in llm/providers/index.ts:
@@ -153,3 +174,15 @@ example.ts
 
 - main.ts: Interactive multi-turn CLI with dynamic message array.
 - example.ts: One-shot example request for fast smoke testing.
+
+## Project Status
+
+- Server implementation has started
+- Core Web3 tools are functional
+- Ongoing hardening/refactor pass for consistency and production readiness
+
+## Next Steps
+
+- Complete server endpoints and integration flow
+- Standardize and clean Web3 tool modules (naming, structure, validation)
+- Add/expand verification scripts and tests

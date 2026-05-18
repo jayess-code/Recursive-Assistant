@@ -42,3 +42,11 @@ next-env.d.ts
 
 
 /dist
+.github/*
+!.github/workflows
+
+# local-only copilot/agent notes
+*.private.md
+*.local.md
+.copilot-local/
+notes/private/
