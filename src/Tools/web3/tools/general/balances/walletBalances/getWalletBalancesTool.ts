@@ -55,7 +55,7 @@ export const parameters: ToolParameters = {
                         minimum: 0,
                         items: AddressSchema,
                         description: "ERC20 token addresses to query",
-                        default: [],  // default empty array
+                        default: [],  
                     }
 
                 },
