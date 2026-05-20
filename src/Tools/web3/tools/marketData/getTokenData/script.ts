@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { askQuestion, parseCliArgs, parseFields, parseSymbols } from "@/Tools/script";
+import { askQuestion, parseCliArgs, parseFields, parseIds, parseSymbols } from "@/Tools/script";
 import { TokenDataTool } from "./getTokeneDataTool";
 import type { TokenDataArgs } from "./getTokeneData";
 
@@ -7,14 +7,6 @@ dotenv.config();
 
 const DEBUG_FIELDS_PRESET = ["price", "market_cap", "tags", "quote_last_updated"] as const;
 
-function parseIds(raw?: string): number[] | null {
-  const ids = (raw ?? "")
-    .split(",")
-    .map((value) => Number.parseInt(value.trim(), 10))
-    .filter((value) => Number.isInteger(value) && value > 0);
-
-  return ids.length ? ids : null;
-}
 
 async function run() {
   const cli = parseCliArgs(process.argv.slice(2));
@@ -44,9 +36,17 @@ async function run() {
     platform = platformArg.includes(",") ? platformArg.split(",").map((p) => p.trim()).filter(Boolean) : platformArg;
   }
 
+  let address: string | string[] | null = null;
+  const addressArg = typeof cli.address === "string" && cli.address.trim()
+    ? cli.address.trim()
+    : (typeof cli.addresses === "string" && cli.addresses.trim() ? cli.addresses.trim() : null);
+  if (addressArg) {
+    address = addressArg.includes(",") ? addressArg.split(",").map((a) => a.trim()).filter(Boolean) : addressArg;
+  }
+
   const queries = ids?.length
-    ? ids.map((id) => ({ id, symbol: null, name: name || null, ...(platform ? { platform } : {}) }))
-    : symbols.map((symbol) => ({ id: null, symbol, name: name || null, ...(platform ? { platform } : {}) }));
+    ? ids.map((id) => ({ id, symbol: null, name: name || null, ...(platform ? { platform } : {}), ...(address ? { address } : {}) }))
+    : symbols.map((symbol) => ({ id: null, symbol, name: name || null, ...(platform ? { platform } : {}), ...(address ? { address } : {}) }));
 
   const args: TokenDataArgs = {
     queries,

@@ -6,6 +6,7 @@ export interface TokenDataArgs {
         symbol?: string | null;
         name?: string | null;
         platform?: string | string[] | null;
+        address?: string | string[] | null;
     }> | null;
     currency?: string | null; // e.g., 'USD'
     fields?: string[] | null;
@@ -17,11 +18,14 @@ type TokenDataQuery = {
         symbol?: string | null;
         name?: string | null;
         platform?: string | string[] | null;
+        address?: string | string[] | null;
     };
     queryParam: string;
     currency: string;
     lookupBy: "id" | "symbol";
     nameFilter?: string;
+    addressFilter?: string[];
+    platformFilter?: string[];
 };
 
 type TokenDataQueryOutput = {
@@ -90,11 +94,30 @@ export async function getCexTokenDataBatch(args: TokenDataArgs, context?: string
         const symbol = normalizeSymbol(query?.symbol);
         const nameFilter = normalize(query?.name);
         const platform = query?.platform ?? null;
+        const address = query?.address ?? null;
+        
+        // Normalize platform filter(s)
+        let platformFilter: string[] = [];
+        if (Array.isArray(platform)) {
+            platformFilter = platform.map((p) => String(p).trim().toLowerCase()).filter(Boolean);
+        } else if (typeof platform === "string" && platform.trim()) {
+            platformFilter = [platform.trim().toLowerCase()];
+        }
+        
+        // Normalize address filter(s)
+        let addressFilter: string[] = [];
+        if (Array.isArray(address)) {
+            addressFilter = address.map((a) => String(a).trim().toLowerCase()).filter(Boolean);
+        } else if (typeof address === "string" && address.trim()) {
+            addressFilter = [address.trim().toLowerCase()];
+        }
+        
         const input = {
             ...(id !== null ? { id } : { id: null }),
             ...(symbol ? { symbol } : { symbol: null }),
             ...(nameFilter ? { name: String(query?.name ?? "").trim() } : { name: null }),
             ...(platform ? { platform } : { platform: null }),
+            ...(address ? { address } : { address: null }),
         };
 
         if (id !== null) {
@@ -104,6 +127,8 @@ export async function getCexTokenDataBatch(args: TokenDataArgs, context?: string
                 currency,
                 lookupBy: "id",
                 ...(nameFilter ? { nameFilter } : {}),
+                ...(platformFilter.length ? { platformFilter } : {}),
+                ...(addressFilter.length ? { addressFilter } : {}),
             };
         }
 
@@ -117,6 +142,8 @@ export async function getCexTokenDataBatch(args: TokenDataArgs, context?: string
             currency,
             lookupBy: "symbol",
             ...(nameFilter ? { nameFilter } : {}),
+            ...(platformFilter.length ? { platformFilter } : {}),
+            ...(addressFilter.length ? { addressFilter } : {}),
         };
     });
 
@@ -158,14 +185,7 @@ export async function getCexTokenDataBatch(args: TokenDataArgs, context?: string
 
     const requestedFields = normalizeRequestedFields(args.fields);
     const queryOutputs: TokenDataQueryOutput[] = [];
-    for (const { input, queryParam, currency, lookupBy, nameFilter } of queries as Array<{ input: { id?: number | null; symbol?: string | null; name?: string | null; platform?: string | string[] | null }, queryParam: any, currency: any, lookupBy: any, nameFilter: any }>) {
-        // Normalize platform filter(s) for this query
-        let platformFilter: string[] = [];
-        if (Array.isArray(input.platform)) {
-            platformFilter = input.platform.map((p) => String(p).trim().toLowerCase()).filter(Boolean);
-        } else if (typeof input.platform === "string" && input.platform.trim()) {
-            platformFilter = [input.platform.trim().toLowerCase()];
-        }
+    for (const { input, queryParam, currency, lookupBy, nameFilter, platformFilter = [], addressFilter = [] } of queries as Array<{ input: any, queryParam: any, currency: any, lookupBy: any, nameFilter?: any, platformFilter?: any, addressFilter?: any }>) {
         const rawEntry =
             lookupBy === "id"
                 ? idData.data?.[queryParam]
@@ -180,9 +200,18 @@ export async function getCexTokenDataBatch(args: TokenDataArgs, context?: string
         // Platform filter (if present)
         let filteredEntries = symbolDataEntries;
         if (platformFilter.length) {
-            filteredEntries = symbolDataEntries.filter((entry) => {
+            filteredEntries = filteredEntries.filter((entry) => {
                 const slug = String(entry.platform?.slug ?? "").toLowerCase();
                 return platformFilter.includes(slug);
+            });
+        }
+        
+        // Address filter (if present)
+        if (addressFilter.length) {
+            filteredEntries = filteredEntries.filter((entry) => {
+                // Check token_address field on platform object
+                const tokenAddr = String(entry.platform?.token_address ?? "").trim().toLowerCase();
+                return tokenAddr && addressFilter.includes(tokenAddr);
             });
         }
 

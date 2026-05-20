@@ -38,6 +38,13 @@ const parameters: ToolParameters = {
                         default: null,
                         description: "Platform/chain slug (e.g. ethereum, solana, base) or array of slugs to filter results."
                     },
+                    address: {
+                        type: ["string", "array"],
+                        items: { type: "string" },
+                        nullable: true,
+                        default: null,
+                        description: "Contract address used to disambiguate tokens on the same platform. Should be provided as a last resort when id, symbol, name, and platform are not sufficient to identify the token."
+                    },
                 },
                 required: ["id", "symbol", "name", "platform"],
             },

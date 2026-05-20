@@ -62,3 +62,13 @@ export function askQuestion(question: string): Promise<string> {
     });
   });
 }
+
+export function parseIds(raw?: string): number[] | null {
+  const ids = (raw ?? "")
+    .split(",")
+    .map((value) => Number.parseInt(value.trim(), 10))
+    .filter((value) => Number.isInteger(value) && value > 0);
+
+  return ids.length ? ids : null;
+}
+
