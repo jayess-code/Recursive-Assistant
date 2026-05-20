@@ -5,20 +5,42 @@ import { TOKEN_SELECTABLE_FIELDS } from "./TokenDataFields";
 const parameters: ToolParameters = {
     type: "object",
     properties: {
-        ids: {
+        queries: {
             type: "array",
             description:
-                "Optional list of CoinMarketCap token IDs to fetch. Use this when symbols may collide; ids take precedence over symbols.",
-            items: { type: "integer" },
-            minimum: 1,
-            nullable: true,
-            default: null,
-        },
-        symbols: {
-            type: "array",
-            description:
-                "Optional list of cryptocurrency symbols to fetch (e.g., ['BTC', 'ETH', 'DOGE']). Ignored when ids are provided.",
-            items: { type: "string" },
+                "One or more token lookup queries. Prefer id when known. When id is missing, provide symbol and optionally name to disambiguate symbol collisions.",
+            items: {
+                type: "object",
+                additionalProperties: false,
+                properties: {
+                    id: {
+                        type: "integer",
+                        nullable: true,
+                        default: null,
+                        description: "Optional CoinMarketCap token id. If provided, id lookup is used.",
+                    },
+                    symbol: {
+                        type: "string",
+                        nullable: true,
+                        default: null,
+                        description: "Optional token symbol (e.g. BTC, DOGE) used when id is not provided.",
+                    },
+                    name: {
+                        type: "string",
+                        nullable: true,
+                        default: null,
+                        description: "Optional token name used to narrow symbol matches (e.g. Dogecoin).",
+                    },
+                    platform: {
+                        type: ["string", "array"],
+                        items: { type: "string" },
+                        nullable: true,
+                        default: null,
+                        description: "Platform/chain slug (e.g. ethereum, solana, base) or array of slugs to filter results."
+                    },
+                },
+                required: ["id", "symbol", "name", "platform"],
+            },
             minimum: 1,
             maximum: 10,
             nullable: true,
@@ -40,11 +62,7 @@ const parameters: ToolParameters = {
             default: null,
         },
     },
-    required: ["currency", "fields"],
-    anyOf: [
-        { type: "object", required: ["symbols"] },
-        { type: "object", required: ["ids"] },
-    ],
+    required: ["queries", "currency", "fields"],
     additionalProperties: false,
 };
 
@@ -53,9 +71,8 @@ export const TokenDataTool: ToolConfig<TokenDataArgs> = {
         type: "function",
         name: "cex_token_data_tool",
         description:
-            "Fetch centralized-exchange token metadata and quote data from CoinMarketCap for one or more symbols or CoinMarketCap ids, with optional field projection for a compact response. Ids are preferred when provided to avoid symbol collisions.",
+            "Fetch centralized-exchange token metadata and quote data from CoinMarketCap for one or more token queries. Each query can include id, symbol, and optional name for symbol disambiguation. Ids are preferred when available. Returns an ordered queries array aligned with input order.",
         parameters,
-        // @ts-ignore
         strict: true,
         handler: async (args) => {
            
@@ -71,6 +88,6 @@ export const TokenDataTool: ToolConfig<TokenDataArgs> = {
         mode: "analyze",
         version: "1.0.0",
         definition:
-            "Fetches CoinMarketCap token metadata and latest centralized-exchange quote data for one or more symbols or CoinMarketCap ids in a selected quote currency. Supports optional field projection for compact responses while retaining core identity fields. Id-based lookup should be preferred when symbols may collide. Use this for price discovery and market comparison, not as proof of executable on-chain swap output.",
+            "Fetches CoinMarketCap token metadata and latest centralized-exchange quote data for one or more token queries in a selected quote currency. Each query supports id, symbol, and optional name; id-based lookup should be preferred, while symbol+name narrows ambiguous symbols. Supports optional field projection for compact responses. Returns a structured payload: provider, currency, timestamp, and queries[] where each item includes input, lookupBy, currency, resultCount, and data (object for id lookups, array for symbol lookups, or null when no match). Use this for price discovery and market comparison, not as proof of executable on-chain swap output.",
     },
 };

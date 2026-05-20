@@ -1,9 +1,8 @@
-export const MANDATORY_FIELDS = ["id", "name", "symbol", "slug", "is_active", "is_fiat"] as const;
+export const MANDATORY_FIELDS = ["id", "name", "symbol", "slug", "cmc_rank", "is_active", "is_fiat"] as const;
 
 export const TOKEN_OPTIONAL_FIELDS = [
     "tags",
     "date_added",
-    "cmc_rank",
     "circulating_supply",
     "total_supply",
     "max_supply",
