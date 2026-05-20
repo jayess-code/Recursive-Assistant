@@ -332,7 +332,7 @@ export async function fetchCoinMarketCapTokenData(args: {
   if (!apiKey) {
     return {
       data: null,
-      warning: "CoinMarketCap API key was not found (expected COINMARKET_API). Returning Dex-only result.",
+      warning: "CoinMarketCap API key was not found (expected COINMARKETCAP_API_KEY). Returning Dex-only result.",
     };
   }
 

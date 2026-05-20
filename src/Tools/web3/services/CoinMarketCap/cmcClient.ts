@@ -8,11 +8,11 @@ export async function getCoinMarketCapApiKey(context?: CoinMarketCapContext): Pr
   const fromSecrets = context?.secrets
     ? await context.secrets.getApiKey({
         provider: "coinmarketcap",
-        envVar: "COINMARKET_API",
+        envVar: "COINMARKETCAP_API_KEY",
       })
     : null;
 
-  const key = fromSecrets ?? process.env.COINMARKET_API ?? null;
+  const key = fromSecrets ?? process.env.COINMARKETCAP_API_KEY ?? null;
   return key && key.trim() ? key.trim() : null;
 }
 

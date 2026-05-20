@@ -422,8 +422,8 @@ export const fetchContractAbiTool: ToolConfig<
         ],
     },
     info: {
-        category: "smartcontract",
-        subcategory: "contracts",
+        category: "crypto",
+        subcategory: "smartcontract",
         tags: ["smartcontract", "contracts", "abi"],
         riskLevel: "low",
         readOnly: true,

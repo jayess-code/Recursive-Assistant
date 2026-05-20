@@ -9,6 +9,7 @@ import { fetchTokenPairsTool } from "./web3/tools/marketData/pairs/fetchTokenPai
 import { bridgeDiscoveryTool, bridgeExecuteTool, bridgeQuoteTool, bridgeStatusTool, swapBuildTool, swapDetectTool, swapQuoteTool } from "./web3/tools/index";
 import { manageAllowancesTool } from "./web3/tools/general/allowances/manageAllowancesTool";
 import { searchTokenTool } from "./web3/tools/marketData/searchToken/searchTokenTool";
+import { TokenDataTool } from "./web3/tools/marketData/getTokenData/getTokeneDataTool";
 export const localTools: Record<string, ToolConfig> = {
     get_weather: getWeatherTool,
     get_available_chains: getAvailableChainsTool,
@@ -22,6 +23,7 @@ export const localTools: Record<string, ToolConfig> = {
     manage_allowances: manageAllowancesTool,
     send_transaction: sendTransactionTool,
     search_token: searchTokenTool,
+    cex_token_data_tool: TokenDataTool,
     bridge_discovery: bridgeDiscoveryTool,
     bridge_execute: bridgeExecuteTool,
     bridge_quote: bridgeQuoteTool,

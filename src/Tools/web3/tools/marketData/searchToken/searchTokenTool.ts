@@ -118,7 +118,7 @@ const parameters: ToolParameters = {
 			nullable: true,
 			default: true,
 			description:
-				"Whether to enrich results with CoinMarketCap metadata and aggregated market context when COINMARKET_API is configured.",
+				"Whether to enrich results with CoinMarketCap metadata and aggregated market context when COINMARKETCAP_API_KEY is configured.",
 		},
 		pairOptions: {
 			...pairOptionsSchema(

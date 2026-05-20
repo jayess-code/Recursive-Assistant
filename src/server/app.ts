@@ -16,7 +16,7 @@ import xss from "xss-clean";
 
 import assistantRouter from "./api/assistants/routes";
 import userRouter from "./api/users/routes";
-// import toolRouter from "./Api/tools/routes";
+import toolRouter from "./api/tools/routes";
 // import conversationRouter from "./Api/conversations/routes";
 // import messageRouter from "./Api/message/routes";
 // import secretRouter from "./Api/secret/routes";
@@ -126,7 +126,7 @@ app.use("/api", apiLimiter);
 ===================================================== */
 app.use("/api/v1/assistants", assistantRouter);
 app.use("/api/v1/users", userRouter);
-// app.use("/api/v1/tools", toolRouter);
+app.use("/api/v1/tools", toolRouter);
 // app.use("/api/v1/models", modelsRouter);
 
 

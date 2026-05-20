@@ -54,6 +54,7 @@ export type JSONSchema = {
   format?: string;
   default?: any;
   nullable?: boolean;
+  anyOf?: JSONSchema[];
 
   properties?: Record<string, JSONSchema>;
   required?: string[];
@@ -65,12 +66,14 @@ export type ToolParameters =
   | {
       type: "object";
       additionalProperties: false;
+      anyOf?: JSONSchema[];
     } // zero-argument function
   | {
       type: "object";
       properties: Record<string, JSONSchema>;
       required?: string[];
       additionalProperties: boolean;
+      anyOf?: JSONSchema[];
     };
 
 
@@ -135,6 +138,7 @@ interface BaseToolInfo {
   access?: "read" | "write" | "admin";
   provider?: string;
   mode?: "execute" | "analyze" | "simulate" | "audit" | "builder";
+  allowedEnvironments?: Array<"development" | "test" | "staging" | "production">;
   definition?: string;
   metadata?: Record<string, any>;
   isEnabled?: boolean;

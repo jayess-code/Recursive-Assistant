@@ -129,6 +129,42 @@ Important notes:
 - LayerZero may return `422 Unsupported token` for some chain/token pairs. This is expected when the pair is not transferable.
 - A route can exist at discovery time and still fail execution-time validation due to provider-level constraints.
 
+## CoinMarketCap Token Data
+
+The token-data tool fetches CoinMarketCap metadata and quote data with optional field projection.
+
+- Tool name: `cex_token_data_tool`
+- Runtime export: `TokenDataTool`
+- Preferred lookup for collision-safe requests: `ids`
+- Convenience lookup: `symbols`
+
+Behavior notes:
+
+- If you pass `ids`, the tool returns the exact CoinMarketCap token for each id.
+- If you pass `symbols`, the tool returns all matching tokens for each symbol, which is useful when a ticker is shared by more than one asset.
+- Core identity fields are always preserved in projected responses.
+- `fields` controls the compact projection path.
+- `quote_last_updated` maps to the quote timestamp.
+
+CLI examples:
+
+```bash
+npx tsx src/Tools/web3/tools/marketData/getTokenData/script.ts symbols=pol currency=gbp fields=price,market_cap,platform
+```
+
+```bash
+npx tsx src/Tools/web3/tools/marketData/getTokenData/script.ts ids=38769 currency=gbp
+```
+
+```bash
+npx tsx src/Tools/web3/tools/marketData/getTokenData/script.ts symbols=kat currency=gbp debug=fields
+```
+
+Debug note:
+
+- `debug=fields` applies a compact preset of `price`, `market_cap`, `tags`, and `quote_last_updated` when `fields` is omitted.
+- If `fields` is explicitly provided, that selection wins over the debug preset.
+
 ## Providers Available
 
 Provider registry is defined in llm/providers/index.ts:
