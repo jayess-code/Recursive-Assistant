@@ -1,6 +1,6 @@
 import * as readline from "readline";
 import dotenv from "dotenv";
-import { parseCliArgs } from "@/Tools/script";
+import { parseCliArgs } from "@/CLI/utils";
 import { CexCryptoPriceTool } from "./getCryptoPricesTool";
 import type { CryptoPriceArgs } from "./getCryptoPrices";
 

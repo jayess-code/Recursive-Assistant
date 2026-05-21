@@ -13,12 +13,12 @@ const parameters: ToolParameters = {
                 type: "object",
                 additionalProperties: false,
                 properties: {
-                    id: {
-                        type: "integer",
-                        nullable: true,
-                        default: null,
-                        description: "Optional CoinMarketCap token id. If provided, id lookup is used.",
-                    },
+                    // id: {
+                    //     type: "integer",
+                    //     nullable: true,
+                    //     default: null,
+                    //     description: "Optional CoinMarketCap token id which you will provide if known. Id lookup is preferred when available but not required and can be left null.",
+                    // },
                     symbol: {
                         type: "string",
                         nullable: true,
@@ -46,7 +46,9 @@ const parameters: ToolParameters = {
                         description: "Contract address used to disambiguate tokens on the same platform. Should be provided as a last resort when id, symbol, name, and platform are not sufficient to identify the token."
                     },
                 },
-                required: ["id", "symbol", "name", "platform"],
+                required: [
+                    // "id",
+                     "symbol", "name", "platform", "address"],
             },
             minimum: 1,
             maximum: 10,

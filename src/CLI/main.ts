@@ -40,6 +40,7 @@ async function main() {
     }
 
     let streamedResponse = false;
+    let streamHeaderPrinted = false;
     const agent = new Agent(selectedPreset, {
         provider: {
             name:  "openai",
@@ -50,6 +51,10 @@ async function main() {
         reasoningEngineOptions: { outputOptions: { includeReasoningSteps: true, includeExecutedToolCalls: true } },
         stream: true,
         onToken: (token) => {
+            if (!streamHeaderPrinted) {
+                process.stdout.write(`${agent.getDefinition().name}:\n`);
+                streamHeaderPrinted = true;
+            }
             streamedResponse = true;
             process.stdout.write(token);
         },
@@ -59,7 +64,7 @@ async function main() {
     console.log("Welcome to the AI Agent CLI!");
 
     while (true) {
-        const userInput = (await question("Please enter your command: ")).trim();
+        const userInput = (await question("You: ")).trim();
 
         if (!userInput) {
             continue;
@@ -75,6 +80,7 @@ async function main() {
         });
 
         streamedResponse = false;
+        streamHeaderPrinted = false;
         const result = await agent.run(messages);
         messages = result.messages;
 
@@ -83,7 +89,7 @@ async function main() {
             continue;
         }
 
-        console.log("Final message:\n", result.finalMessage);
+        console.log(`${agent.getDefinition().name}:\n`, result.finalMessage);
     }
 
     closeReadline();

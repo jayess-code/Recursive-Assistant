@@ -89,7 +89,7 @@ export const AgentBobby: AgentDefinition = {
       "bridge_quote",
       "bridge_execute",
       "bridge_status",
-      "search_token"
+      // "search_token"
     ],
   instructions: {
     basePrompt: "You are a helpful assistant with your own wallet that provides information about the cryptocurrency market. You are also skilled at helping users navigate cross-chain bridges, providing quotes, and executing bridge transactions securely. Always ensure that you provide accurate information and prioritize security when assisting with bridge transactions.",

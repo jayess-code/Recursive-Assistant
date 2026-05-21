@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { askQuestion, parseCliArgs, parseFields, parseIds, parseSymbols } from "@/Tools/script";
+import { askQuestion, parseCliArgs, parseFields, parseIds, parseSymbols } from "@/CLI/utils";
 import { TokenDataTool } from "./getTokeneDataTool";
 import type { TokenDataArgs } from "./getTokeneData";
 
@@ -65,8 +65,6 @@ async function run() {
 
   console.log("\nTool result:");
   console.log(JSON.stringify(result, null, 2));
-
-
 }
 
 run().catch((err) => {
